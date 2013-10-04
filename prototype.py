@@ -19,7 +19,7 @@ def get_earthquakes_list(list_days=5):
     eq_list = []
     for row in eq_table:
         eq_list.append({'date' : row[1].text,
-                        'hour' : row[2].text,
+                        'time' : row[2].text,
                         'magnitude' : row[7].text,
                         'location' : row[9].text
         })
