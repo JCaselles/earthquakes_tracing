@@ -25,7 +25,7 @@ class App():
                 if compare_latest(former_latest, latest_eq):
                     print latest_eq
             former_latest = latest_eq
-        sleep(60*5)
+            sleep(60*5)
 
 
 def compare_latest(former_last, last):
