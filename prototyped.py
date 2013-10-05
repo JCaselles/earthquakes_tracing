@@ -33,7 +33,10 @@ class App():
                         server.starttls()
                         server.login(argv[2], argv[3])
                         server.sendmail(argv[2], argv[2],
-                                compose_mail(latest_eq).encode('utf-8'))
+                                compose_mail(latest_eq).encode('ascii',
+                                                               'replace'))
+                                # FIXME: this is a workaroud, fix encoding
+                                # issues
                         server.quit()
                     else:
                         with open('%searthquakes.log', 'a') as file_log:
