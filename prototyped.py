@@ -28,11 +28,15 @@ class App():
             latest_eq = prototype.get_earthquakes_list(1)[0]
             if former_latest:
                 if former_latest != latest_eq:
-                    if len(argv) == 4:
+                    if len(argv) >= 4:
                         server = SMTP('smtp.gmail.com:587')
                         server.starttls()
                         server.login(argv[2], argv[3])
-                        server.sendmail(argv[2], argv[2],
+                        to_addrs = [argv[2]]
+                        if len(argv) > 4:
+                            for email_addrs in argv[4:]:
+                                to_addrs.append(email_addrs)
+                        server.sendmail(argv[2], to_addrs,
                                 compose_mail(latest_eq).encode('ascii',
                                                                'replace'))
                                 # FIXME: this is a workaroud, fix encoding
