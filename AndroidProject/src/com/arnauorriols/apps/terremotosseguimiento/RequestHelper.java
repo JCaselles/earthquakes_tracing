@@ -11,16 +11,34 @@
 
 package com.arnauorriols.apps.terremotosseguimiento;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
+import android.content.Context;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
 class RequestHelper {
 
-    private static final DEBUG_TAG = "REQUESTHELPER"
+    private static final String  DEBUG_TAG = "REQUESTHELPER";
 
     private static final String BASE_URL = "http://www.ign.es/ign/layoutIn/"
                                            + "sismoListadoTerremotos.do";
 
+    private Context context;
+
+    public RequestHelper (Context context){
+        this.context = context;
+    }
     private boolean checkNetwork(){
         ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             return true;
@@ -29,10 +47,9 @@ class RequestHelper {
         }
     }
 
-    public HashMap<String, String> fetchEarthquakeList(int listDays) throws IOExeption{
+    public HashMap<String, String> fetchEarthquakeList(int listDays) throws IOException{
 
         InputStream is = null;
-        len = null;
 
         try {
                 URL url = new URL(BASE_URL);
@@ -49,7 +66,6 @@ class RequestHelper {
 
                 // Convert the InputStream into a string
                 String contentAsString = readIt(is);
-                return contentAsString;
 
             // Makes sure that the InputStream is closed after the app is
             // finished using it.
@@ -59,15 +75,22 @@ class RequestHelper {
                 } 
             }
 
-        private Strign readIt (InputStream is){
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String result;
-            String line;
-            while ((line = br.readline()) != null){
+        HashMap<String, String> hs = new HashMap<String, String>();
+        return hs;
+    }
+
+    private String readIt(InputStream is) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String result = null;
+        String line = null;
+        try{
+            while ((line = br.readLine()) != null){
                 result += line;
             }
+        }finally{
             return result;
         }
+    }
 
 
     }
