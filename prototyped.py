@@ -32,7 +32,8 @@ class App():
                         server = SMTP('smtp.gmail.com:587')
                         server.starttls()
                         server.login(argv[2], argv[3])
-                        server.sendmail(argv[2], argv[2], compose_mail(latest_eq))
+                        server.sendmail(argv[2], argv[2],
+                                compose_mail(latest_eq).encode('utf-8'))
                         server.quit()
                     else:
                         with open('%searthquakes.log', 'a') as file_log:
