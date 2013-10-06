@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Seguimiento Terremotos España</string>
+    <string name="app_name">Terremotos España</string>
     <string name="new_eq">Ha tenido lugar un nuevo terremoto!</string>
     <string name="start_text">Activar</string>
     <string name="cancel_text">Desactivar</string>
