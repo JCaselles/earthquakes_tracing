@@ -7,7 +7,7 @@
  *
  * Author: Arnau Orriols
  */
-package com.arnauorriols.apps.terremotosseguimiento
+package com.arnauorriols.apps.terremotosseguimiento;
 
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.app.AlarmManager;
@@ -33,6 +33,12 @@ public class TSAlarmReceiver extends WakefulBroadcastReceiver {
         am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                               pi)
+                               pi);
+    }
+    public void cancelAlarm(Context context) {
+        // If the alarm has been set, cancel it.
+        if (am != null) {
+            am.cancel(pi);
+        }
     }
 }

@@ -33,9 +33,9 @@ import org.jsoup.helper.*;
 import org.jsoup.parser.*;
 import org.jsoup.safety.*;
 
-class RequestHelper {
+public class RequestHelper {
 
-    private static final String  DEBUG_TAG = "REQUESTHELPER";
+    public static final String  DEBUG_TAG = "REQUESTHELPER";
 
     private static final String BASE_URL = "http://www.ign.es/ign/layoutIn/"
                                            + "sismoListadoTerremotos.do";
@@ -56,7 +56,7 @@ class RequestHelper {
         }
     }
 
-    public List<HashMap<String, String>> fetchEarthquakeList(int listDays) throws IOException{
+    public List<HashMap<String, String>> fetchEarthquakeList(int listDays) {
 
         //InputStream is = null;
 
