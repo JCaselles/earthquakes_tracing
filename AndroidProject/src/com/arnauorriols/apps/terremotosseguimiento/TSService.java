@@ -52,6 +52,8 @@ public class TSService extends IntentService {
             ObjectInputStream ois = new ObjectInputStream(fis);
             formerLatest = (HashMap<String, String>) ois.readObject();
             Log.v(RequestHelper.DEBUG_TAG, "Former earthquake data found.");
+            Log.v(RequestHelper.DEBUG_TAG, "formerLatest = " + formerLatest.toString());
+
         }catch (FileNotFoundException e){
             Log.v(RequestHelper.DEBUG_TAG, "Fresh start. No earthquake data found");
             formerLatest = new HashMap<String, String>();
@@ -85,7 +87,10 @@ public class TSService extends IntentService {
         HashMap<String, String> latestEQ = new RequestHelper(this)
                                                 .fetchEarthquakeList(1).get(0);
 
-        if (formerLatest != latestEQ) {
+        if (!formerLatest.equals(latestEQ)) {
+            Log.v(RequestHelper.DEBUG_TAG, "new eq! former = " + formerLatest.toString() + 
+                                           ", latest = " + latestEQ.toString());
+
             String shortMsg = latestEQ.get("magnitude") + " -- " +
                        latestEQ.get("location");
             String bigMsg = latestEQ.get("time") + " -- " + latestEQ.get("date") +
