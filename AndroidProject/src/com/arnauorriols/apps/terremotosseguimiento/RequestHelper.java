@@ -113,20 +113,22 @@ public class RequestHelper {
     public HashMap<String, String> fetchLastEarthquake(){
         if (checkNetwork()){
             String completeUrl = BASE_URL + "sismoUltimoTerremoto.do";
+            Elements eqTableRow = null;
             try{
                 Document webContent = Jsoup.connect(completeUrl).get();
-                Elements eqTableRow = webContent.select("filaNormal");
+                eqTableRow = webContent.select(".filaNormal");
 
             }catch (IOException e){
                 Log.e(DEBUG_TAG, "Error connecting with Jsoup to " + BASE_URL);
             }finally{
                 HashMap<String, String> newEQ = extractData(eqTableRow.first());
-                Log.v(DEBUG_TAG, "Last eq: " + newEQ.toString();
+                Log.v(DEBUG_TAG, "Last eq: " + newEQ.toString());
                 return newEQ;
             }
         }else{
             return null;
         }
+    }
 
 
     public HashMap<String, String> extractData (Element tableRow){
