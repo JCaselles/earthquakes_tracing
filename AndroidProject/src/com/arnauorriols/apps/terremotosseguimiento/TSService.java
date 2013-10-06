@@ -32,7 +32,8 @@ public class TSService extends IntentService {
 
     private HashMap<String, String> formerLatest;
 
-    private static final String fileName = "formerlatest.ser";
+    private static final String LAST_LATEST = "lastlatest.ser";
+    private static final String LIST_LATEST = "latestlist.ser";
     private static final int NOTIFICATION_ID = 001;
     public static final String EQ_DATA = "com.arnauorriols.apps.terremotosseguimiento.EQDATA";
     private NotificationManager nm;
@@ -48,7 +49,7 @@ public class TSService extends IntentService {
     protected void onHandleIntent(Intent intent){
         FileInputStream fis = null;
         try{
-            fis = openFileInput(fileName);
+            fis = openFileInput(LAST_LATEST);
             ObjectInputStream ois = new ObjectInputStream(fis);
             formerLatest = (HashMap<String, String>) ois.readObject();
             Log.v(RequestHelper.DEBUG_TAG, "Former earthquake data found.");
@@ -62,17 +63,11 @@ public class TSService extends IntentService {
             formerLatest.put("magnitude", "");
             formerLatest.put("location", "");
         }catch (NullPointerException e){
-            Log.v(RequestHelper.DEBUG_TAG, "Fresh start. No file found", e);
-            formerLatest = new HashMap<String, String>();
-            formerLatest.put("date", "");
-            formerLatest.put("time", "");
-            formerLatest.put("magnitude", "");
-            formerLatest.put("location", "");
+            Log.v(RequestHelper.DEBUG_TAG, "NullPointerException", e);
         }catch (StreamCorruptedException e){
-            Log.e(RequestHelper.DEBUG_TAG, "corrupted data");
+            Log.e(RequestHelper.DEBUG_TAG, "corrupted Stream when opening fis");
         }catch (ClassNotFoundException e){
             Log.e(RequestHelper.DEBUG_TAG, "ClassNotFoundException when opening fis");
-
         }catch (IOException e){
             Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fis");
         }finally{
@@ -84,37 +79,41 @@ public class TSService extends IntentService {
                 }
             }
         }
-        HashMap<String, String> latestEQ = new RequestHelper(this)
-                                                .fetchEarthquakeList(1).get(0);
+        RequestHelper rh = new RequestHelper(this);
+        HashMap<String, String> latestEQ = rh.fetchLastEarthquake();
 
         if (!formerLatest.equals(latestEQ)) {
             Log.v(RequestHelper.DEBUG_TAG, "new eq! former = " + formerLatest.toString() + 
                                            ", latest = " + latestEQ.toString());
 
             String shortMsg = latestEQ.get("magnitude") + " -- " +
-                       latestEQ.get("location");
+                                           latestEQ.get("location");
             String bigMsg = latestEQ.get("time") + " -- " + latestEQ.get("date") +
-                     "\n" + latestEQ.get("magnitude") + " -- " +
-                     latestEQ.get("location");
-
+                                    "\n" + latestEQ.get("magnitude") + " -- " +
+                                    latestEQ.get("location");
             sendNotification(shortMsg, bigMsg, latestEQ);
-        }
-
-        FileOutputStream fos = null;
-        try{
-            fos = openFileOutput(fileName, Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(latestEQ);
-            oos.flush();
-        }catch (IOException e){
-            Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fos");
-        }finally{
-            if (fos != null){
-                try{
-                    Log.v(RequestHelper.DEBUG_TAG, "File saved");
-                    fos.close();
-                }catch (IOException e){
-                    Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fos");
+            List <HashMap<String, String>> listLatest = rh.fetchEarthquakeList(2);
+            FileOutputStream fos = null;
+            try{
+                fos = openFileOutput(LAST_LATEST, Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(latestEQ);
+                oos.flush();
+                fos.close();
+                fos = openFileOutput(LIST_LATEST, Context.MODE_PRIVATE);
+                oos = new ObjectOutputStream(fos);
+                oos.writeObject(listLatest);
+                oos.flush();
+            }catch (IOException e){
+                Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fos");
+            }finally{
+                if (fos != null){
+                    try{
+                        Log.v(RequestHelper.DEBUG_TAG, "File saved");
+                        fos.close();
+                    }catch (IOException e){
+                        Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fos");
+                    }
                 }
             }
         }
