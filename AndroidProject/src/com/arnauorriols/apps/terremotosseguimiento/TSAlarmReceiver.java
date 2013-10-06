@@ -34,7 +34,7 @@ public class TSAlarmReceiver extends WakefulBroadcastReceiver {
         am = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
         Intent intent = new Intent (context, TSAlarmReceiver.class);
         pi = PendingIntent.getBroadcast(context, 0, intent, 0);
-        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+        am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                                SystemClock.elapsedRealtime() + 10 * 1000,
                                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                                pi);
