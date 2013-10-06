@@ -23,46 +23,65 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.NullPointerException;
+import java.io.StreamCorruptedException;
+import java.io.OptionalDataException;
 import java.util.HashMap;
 
 public class TSService extends IntentService {
 
     private HashMap<String, String> formerLatest;
 
-    private static final String fileName = "formerlatest";
+    private static final String fileName = "formerlatest.ser";
     private static final int NOTIFICATION_ID = 001;
+    public static final String EQ_DATA = "com.arnauorriols.apps.terremotosseguimiento.EQDATA";
     private NotificationManager nm;
-    private NotificationCompat.Builder builder;
+    //private NotificationCompat.Builder builder;
 
     public TSService(){
         super("TerremotosSeguimientoService");
 
+
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent){
         FileInputStream fis = null;
         try{
             fis = openFileInput(fileName);
             ObjectInputStream ois = new ObjectInputStream(fis);
             formerLatest = (HashMap<String, String>) ois.readObject();
+            Log.v(RequestHelper.DEBUG_TAG, "Former earthquake data found.");
         }catch (FileNotFoundException e){
+            Log.v(RequestHelper.DEBUG_TAG, "Fresh start. No earthquake data found");
             formerLatest = new HashMap<String, String>();
             formerLatest.put("date", "");
             formerLatest.put("time", "");
             formerLatest.put("magnitude", "");
             formerLatest.put("location", "");
-        }catch (Exception e){
-            Log.e(RequestHelper.DEBUG_TAG, e.getMessage());
+        }catch (NullPointerException e){
+            Log.v(RequestHelper.DEBUG_TAG, "Fresh start. No file found", e);
+            formerLatest = new HashMap<String, String>();
+            formerLatest.put("date", "");
+            formerLatest.put("time", "");
+            formerLatest.put("magnitude", "");
+            formerLatest.put("location", "");
+        }catch (StreamCorruptedException e){
+            Log.e(RequestHelper.DEBUG_TAG, "corrupted data");
+        }catch (ClassNotFoundException e){
+            Log.e(RequestHelper.DEBUG_TAG, "ClassNotFoundException when opening fis");
+
+        }catch (IOException e){
+            Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fis");
         }finally{
             if (fis != null) {
                 try{
                     fis.close();
                 }catch (IOException e){
-                    Log.e(RequestHelper.DEBUG_TAG, e.getMessage());
+                    Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fis");
                 }
             }
         }
-    }
-
-    @Override
-    protected void onHandleIntent(Intent intent){
         HashMap<String, String> latestEQ = new RequestHelper(this)
                                                 .fetchEarthquakeList(1).get(0);
 
@@ -73,7 +92,7 @@ public class TSService extends IntentService {
                      "\n" + latestEQ.get("magnitude") + " -- " +
                      latestEQ.get("location");
 
-            sendNotification(shortMsg, bigMsg);
+            sendNotification(shortMsg, bigMsg, latestEQ);
         }
 
         FileOutputStream fos = null;
@@ -83,34 +102,36 @@ public class TSService extends IntentService {
             oos.writeObject(latestEQ);
             oos.flush();
         }catch (IOException e){
-            Log.e(RequestHelper.DEBUG_TAG, e.getMessage());
+            Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fos");
         }finally{
             if (fos != null){
                 try{
+                    Log.v(RequestHelper.DEBUG_TAG, "File saved");
                     fos.close();
                 }catch (IOException e){
-                    Log.e(RequestHelper.DEBUG_TAG, e.getMessage());
+                    Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fos");
                 }
             }
         }
     }
 
 
-    private void sendNotification(String shortMsg, String bigMsg) {
+    private void sendNotification(String shortMsg, String bigMsg, HashMap<String, String> eqData) {
         nm = (NotificationManager) this.getSystemService(
                                         Context.NOTIFICATION_SERVICE);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-            new Intent(this, TerremotosSeguimiento.class), 0);
+            new Intent(this, TerremotosSeguimiento.class).putExtra(EQ_DATA, eqData), PendingIntent.FLAG_UPDATE_CURRENT | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        NotificationCompat.Builder mBuilder =
+        NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
         .setSmallIcon(R.drawable.ic_launcher)
         .setContentTitle(getString(R.string.new_eq))
         .setStyle(new NotificationCompat.BigTextStyle()
         .bigText(bigMsg))
-        .setContentText(shortMsg);
+        .setContentText(shortMsg)
+        .setAutoCancel(true);
         builder.setContentIntent(contentIntent);
-        nm.notify(NOTIFICATION_ID, mBuilder.build());
+        nm.notify(NOTIFICATION_ID, builder.build());
     }
 
 }

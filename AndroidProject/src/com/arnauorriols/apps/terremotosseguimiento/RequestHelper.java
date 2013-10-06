@@ -35,7 +35,7 @@ import org.jsoup.safety.*;
 
 public class RequestHelper {
 
-    public static final String  DEBUG_TAG = "REQUESTHELPER";
+    public static final String  DEBUG_TAG = "TERREMOTOSSEGUIMIENTO";
 
     private static final String BASE_URL = "http://www.ign.es/ign/layoutIn/"
                                            + "sismoListadoTerremotos.do";
@@ -105,6 +105,7 @@ public class RequestHelper {
                     eqData.put("magnitude", children.get(7).text());
                     eqData.put("location", children.get(9).text());
                     eqList.add(eqData);
+                    Log.v(DEBUG_TAG, eqData.get("location"));
                 }
             }catch (IOException e){
                 Log.e(DEBUG_TAG, "Error connecting with Jsoup to " + BASE_URL);
