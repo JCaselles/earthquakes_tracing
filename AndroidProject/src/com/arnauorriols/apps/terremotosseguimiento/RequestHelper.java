@@ -37,8 +37,7 @@ public class RequestHelper {
 
     public static final String  DEBUG_TAG = "TERREMOTOSSEGUIMIENTO";
 
-    private static final String BASE_URL = "http://www.ign.es/ign/layoutIn/"
-                                           + "sismoListadoTerremotos.do";
+    private static final String BASE_URL = "http://www.ign.es/ign/layoutIn/";
 
     private Context context;
 
@@ -94,18 +93,12 @@ public class RequestHelper {
         queryString.put("cantidad_dias", Integer.toString(listDays));
         List<HashMap<String, String>> eqList = new ArrayList<HashMap<String, String>>();
         if (checkNetwork()){
+            String completeUrl = BASE_URL + "sismoListadoTerremotos.do";
             try{
-                Document webContent = Jsoup.connect(BASE_URL).data(queryString).get();
+                Document webContent = Jsoup.connect(completeUrl).data(queryString).get();
                 Elements eqTableRows = webContent.select("tr.filaNegra2");
                 for (Element row : eqTableRows){
-                    Elements children = row.children();
-                    HashMap<String, String> eqData = new HashMap<String, String>();
-                    eqData.put("date", children.get(1).text());
-                    eqData.put("time", children.get(2).text());
-                    eqData.put("magnitude", children.get(7).text());
-                    eqData.put("location", children.get(9).text());
-                    eqList.add(eqData);
-                    Log.v(DEBUG_TAG, eqData.get("location"));
+                    eqList.add(extractData(row));
                 }
             }catch (IOException e){
                 Log.e(DEBUG_TAG, "Error connecting with Jsoup to " + BASE_URL);
@@ -116,6 +109,39 @@ public class RequestHelper {
             return null;
         }
     }
+
+    public HashMap<String, String> fetchLastEarthquake(){
+        if (checkNetwork()){
+            String completeUrl = BASE_URL + "sismoUltimoTerremoto.do";
+            try{
+                Document webContent = Jsoup.connect(completeUrl).get();
+                Elements eqTableRow = webContent.select("filaNormal");
+
+            }catch (IOException e){
+                Log.e(DEBUG_TAG, "Error connecting with Jsoup to " + BASE_URL);
+            }finally{
+                HashMap<String, String> newEQ = extractData(eqTableRow.first());
+                Log.v(DEBUG_TAG, "Last eq: " + newEQ.toString();
+                return newEQ;
+            }
+        }else{
+            return null;
+        }
+
+
+    public HashMap<String, String> extractData (Element tableRow){
+        Elements children = tableRow.children();
+        HashMap<String, String> eqData = new HashMap<String, String>();
+        eqData.put("date", children.get(1).text());
+        eqData.put("time", children.get(2).text());
+        eqData.put("magnitude", children.get(7).text());
+        eqData.put("location", children.get(9).text());
+        Log.v(DEBUG_TAG, eqData.get("location"));
+        return eqData;
+    }
+
+
+
 
     //private String readIt(InputStream is) throws IOException{
     //    BufferedReader br = new BufferedReader(new InputStreamReader(is));
