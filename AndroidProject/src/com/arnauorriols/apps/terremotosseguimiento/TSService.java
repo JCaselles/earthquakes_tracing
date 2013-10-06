@@ -54,7 +54,7 @@ public class TSService extends IntentService {
             ObjectInputStream ois = new ObjectInputStream(fis);
             formerLatest = (HashMap<String, String>) ois.readObject();
             Log.v(RequestHelper.DEBUG_TAG, "Former earthquake data found.");
-            Log.v(RequestHelper.DEBUG_TAG, "formerLatest = " + formerLatest.toString());
+            Log.v(RequestHelper.DEBUG_TAG, "lastLatest = " + formerLatest.toString());
 
         }catch (FileNotFoundException e){
             Log.v(RequestHelper.DEBUG_TAG, "Fresh start. No earthquake data found");
@@ -104,13 +104,14 @@ public class TSService extends IntentService {
                 fos = openFileOutput(LIST_LATEST, Context.MODE_PRIVATE);
                 oos = new ObjectOutputStream(fos);
                 oos.writeObject(listLatest);
+                Log.v(RequestHelper.DEBUG_TAG, "Writting files. whole list: " + listLatest.toString());
                 oos.flush();
             }catch (IOException e){
                 Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fos");
             }finally{
                 if (fos != null){
                     try{
-                        Log.v(RequestHelper.DEBUG_TAG, "Files saved");
+                        Log.v(RequestHelper.DEBUG_TAG, "Files saved, closing fos");
                         fos.close();
                     }catch (IOException e){
                         Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fos");
