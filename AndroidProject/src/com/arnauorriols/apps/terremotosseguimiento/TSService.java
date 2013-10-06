@@ -27,6 +27,7 @@ import java.lang.NullPointerException;
 import java.io.StreamCorruptedException;
 import java.io.OptionalDataException;
 import java.util.HashMap;
+import java.util.List;
 
 public class TSService extends IntentService {
 
@@ -109,13 +110,15 @@ public class TSService extends IntentService {
             }finally{
                 if (fos != null){
                     try{
-                        Log.v(RequestHelper.DEBUG_TAG, "File saved");
+                        Log.v(RequestHelper.DEBUG_TAG, "Files saved");
                         fos.close();
                     }catch (IOException e){
                         Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fos");
                     }
                 }
             }
+        }else{
+            Log.v(RequestHelper.DEBUG_TAG, "No new earthquakes. We are safe");
         }
     }
 
