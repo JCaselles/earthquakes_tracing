@@ -14,11 +14,12 @@
   limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:terremotosseguimiento="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/start_action"
-        android:showAsAction="ifRoom|withText"
+        terremotosseguimiento:showAsAction="ifRoom|withText"
         android:title="@string/start_text" />
     <item android:id="@+id/cancel_action"
-        android:showAsAction="ifRoom|withText"
+        terremotosseguimiento:showAsAction="ifRoom|withText"
         android:title="@string/cancel_text" />
 </menu>

@@ -2,7 +2,7 @@ package com.arnauorriols.apps.terremotosseguimiento;
 
 import com.arnauorriols.apps.terremotosseguimiento.R;
 
-import android.app.Activity;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +12,7 @@ import android.content.Intent;
 
 import java.util.HashMap;
 
-public class TerremotosSeguimiento extends Activity
+public class TerremotosSeguimiento extends ActionBarActivity
 {
     TSAlarmReceiver alarm = new TSAlarmReceiver();
     /** Called when the activity is first created. */
@@ -72,8 +72,9 @@ public class TerremotosSeguimiento extends Activity
                 alarm.cancelAlarm(this);
                 Log.v(RequestHelper.DEBUG_TAG, "Alarm deactivated");
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return false;
     }
 
 }
