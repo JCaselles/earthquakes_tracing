@@ -11,6 +11,7 @@ package com.arnauorriols.apps.terremotosseguimiento;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -137,6 +138,7 @@ public class TSService extends IntentService {
         .setStyle(new NotificationCompat.BigTextStyle()
         .bigText(bigMsg))
         .setContentText(shortMsg)
+        .setDefaults(Notification.DEFAULT_ALL)
         .setAutoCancel(true);
         builder.setContentIntent(contentIntent);
         nm.notify(NOTIFICATION_ID, builder.build());
