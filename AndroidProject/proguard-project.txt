@@ -12,7 +12,14 @@
 
 # Add any project specific keep options here:
 -keepclassmembers class com.arnauorriols.apps.terremotosseguimiento.RequestHelper
+{
+    *;
+}
 -keepclassmembers class com.arnauorriols.apps.terremotosseguimiento.TSService
+{
+    *;
+}
+-keep class org.jsoup.nodes.Element
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
