@@ -9,5 +9,7 @@
     <string name="date_label">Dia:</string>
     <string name="magnitude_label">Magnitud:</string>
     <string name="location_label">Localización:</string>
+    <string name="usage_title">Utilización:</string>
+    <string name="usage_explanation">Seleccione \"Activar\" en el menú para empezar a monitorizar el registro de terremotos. Recibirá una notificación cuando ocurra un nuevo terremoto. Clicando dicha notificación obtendrá todos los detalles del terremoto.\n\nEsta applicación consume muy pocos datos. Aún así, si lo desea puede desactivarla seleccionando \"Desactivar\".\n\nEsta applicación esta en una fase muy primitiva, en breve serán añadidas muchas más funcionalidades.</string>
 
 </resources>

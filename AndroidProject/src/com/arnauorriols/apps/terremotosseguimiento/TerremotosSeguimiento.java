@@ -44,7 +44,13 @@ public class TerremotosSeguimiento extends ActionBarActivity
                               "\t\t" + eqData.get("magnitude"));
             location.setText(getString(R.string.location_label) +
                              "\t\t" + eqData.get("location"));
+        }else{
+            TextView title = (TextView) findViewById(R.id.title);
+            TextView help = (TextView) findViewById(R.id.time);
+            title.setText(getString(R.string.usage_title));
+            help.setText(getString(R.string.usage_explanation));
         }
+
     }
     
     @Override
