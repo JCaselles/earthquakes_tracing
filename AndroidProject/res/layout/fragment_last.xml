@@ -16,7 +16,12 @@
 <View
     android:layout_width="match_parent"
     android:layout_height="2dp"
-    android:background="#EAEAEA"/>
+    android:background="#343434"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"/>
+<ScrollView 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -48,5 +53,6 @@
     android:textSize="20sp"
     android:layout_height="wrap_content"/>
 </LinearLayout>
+</ScrollView>
 </LinearLayout>
 

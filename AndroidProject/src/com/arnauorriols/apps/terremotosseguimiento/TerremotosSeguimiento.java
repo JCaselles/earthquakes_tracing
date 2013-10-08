@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
 import android.content.Intent;
+import android.app.PendingIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -31,12 +32,12 @@ public class TerremotosSeguimiento extends ActionBarActivity
         setContentView(R.layout.main);
         activated = (PendingIntent.getBroadcast(this, 0, new Intent(this, TSAlarmReceiver.class), PendingIntent.FLAG_NO_CREATE) != null);
         Log.d(RequestHelper.DEBUG_TAG, "activated is" + String.valueOf(activated));
-        
+
         tsfpa = new TSFragmentPageAdapter(this, getSupportFragmentManager());
         vp = (ViewPager) findViewById(R.id.pager);
         vp.setAdapter(tsfpa);
         ActionBar ab = getSupportActionBar();
-
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         ActionBar.TabListener tl = new ActionBar.TabListener() {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft){
                 vp.setCurrentItem(tab.getPosition());
@@ -53,6 +54,13 @@ public class TerremotosSeguimiento extends ActionBarActivity
                 getSupportActionBar().setSelectedNavigationItem(position);
             }
         });
+        for (int i = 0; i < MAX_ITEMS; i++) {
+            ab.addTab(
+                    ab.newTab()
+                            .setText("Tab " + (i + 1))
+                            .setTabListener(tl));
+        }
+
     }
 
     @Override
