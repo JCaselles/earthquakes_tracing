@@ -7,10 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
-import android.widget.TextView;
 import android.content.Intent;
-
-import java.util.HashMap;
 
 public class TerremotosSeguimiento extends ActionBarActivity
 {
@@ -23,30 +20,6 @@ public class TerremotosSeguimiento extends ActionBarActivity
         setContentView(R.layout.main);
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-
-        Intent intent = getIntent();
-        HashMap<String, String> eqData = (HashMap<String, String>) intent.getSerializableExtra(TSService.EQ_DATA);
-
-        if (eqData != null){ 
-            TextView time  = (TextView) findViewById(R.id.time);
-            TextView date = (TextView) findViewById(R.id.date);
-            TextView magnitude = (TextView) findViewById(R.id.magnitude);
-            TextView location = (TextView) findViewById(R.id.location);
-
-            time.setText(getString(R.string.time_label) +
-                         "\t\t" + eqData.get("time"));
-            date.setText(getString(R.string.date_label) +
-                         "\t\t" + eqData.get("date"));
-            magnitude.setText(getString(R.string.magnitude_label) +
-                              "\t\t" + eqData.get("magnitude"));
-            location.setText(getString(R.string.location_label) +
-                             "\t\t" + eqData.get("location"));
-        }
-    }
-    
     @Override
     protected void onNewIntent(Intent intent){
         setIntent(intent);
