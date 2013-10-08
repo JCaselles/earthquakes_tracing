@@ -1,4 +1,4 @@
-package com.arnauoriols.apps.terremotosseguimiento;
+package com.arnauorriols.apps.terremotosseguimiento;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,9 +30,9 @@ public class TSDetailsFragment extends Fragment {
 
         if (eqData != null){ 
             TextView time  = (TextView) getView().findViewById(R.id.time);
-            TextView date = (TextView) getView().ffindViewById(R.id.date);
-            TextView magnitude = (TextView) getView().ffindViewById(R.id.magnitude);
-            TextView location = (TextView) getView().ffindViewById(R.id.location);
+            TextView date = (TextView) getView().findViewById(R.id.date);
+            TextView magnitude = (TextView) getView().findViewById(R.id.magnitude);
+            TextView location = (TextView) getView().findViewById(R.id.location);
 
             time.setText(getString(R.string.time_label) +
                          "\t\t" + eqData.get("time"));

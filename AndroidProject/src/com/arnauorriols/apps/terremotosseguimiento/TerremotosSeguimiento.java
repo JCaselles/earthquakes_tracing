@@ -4,26 +4,24 @@ import com.arnauorriols.apps.terremotosseguimiento.R;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
-import acandroid.os.Bundle;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
 import android.content.Intent;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.content.Context;
 
 public class TerremotosSeguimiento extends ActionBarActivity
 {
-    private final int MAX_ITEMS = 2;
-    private TSFragmentPagerAdapter tsfpa;
+    private static final int MAX_ITEMS = 2;
+    private TSFragmentPageAdapter tsfpa;
     private ViewPager vp;
     private TSAlarmReceiver alarm = new TSAlarmReceiver();
-
-    private final ActionBar ab = getActionBar();
-
 
 
     /** Called when the activity is first created. */
@@ -32,20 +30,25 @@ public class TerremotosSeguimiento extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        tsfpa = new TSFragmentPagerAdapter(getSupportFragmentManager());
+        tsfpa = new TSFragmentPageAdapter(this, getSupportFragmentManager());
         vp = (ViewPager) findViewById(R.id.pager);
         vp.setAdapter(tsfpa);
+        ActionBar ab = getSupportActionBar();
 
         ActionBar.TabListener tl = new ActionBar.TabListener() {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft){
                 vp.setCurrentItem(tab.getPosition());
             }
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft){
+            }
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft){
+            }
         };
 
         vp.setOnPageChangeListener( new ViewPager.SimpleOnPageChangeListener() {
-            Override
+            @Override
             public void onPageSelected(int position) {
-                getActionBar().setSelectedNavigationItem(position);
+                getSupportActionBar().setSelectedNavigationItem(position);
             }
         });
     }
@@ -81,8 +84,10 @@ public class TerremotosSeguimiento extends ActionBarActivity
     }
 
     public static class TSFragmentPageAdapter extends FragmentPagerAdapter {
-        public TSFragmentPageAdapter(FragmentManager fm) {
+        private Context context;
+        public TSFragmentPageAdapter(Context context, FragmentManager fm) {
             super(fm);
+            this.context = context;
         }
 
         @Override
@@ -103,4 +108,5 @@ public class TerremotosSeguimiento extends ActionBarActivity
             }
             return f;
         }
+    }
 }
