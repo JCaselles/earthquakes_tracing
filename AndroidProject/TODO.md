@@ -5,5 +5,6 @@ TODO LIST
     - ActionBar with tabs?
 4. Retrieve more info from website:
     - Map with location
+5. Silent mode
 
 
