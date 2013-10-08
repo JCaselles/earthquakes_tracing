@@ -22,14 +22,16 @@ public class TerremotosSeguimiento extends ActionBarActivity
     private TSFragmentPageAdapter tsfpa;
     private ViewPager vp;
     private TSAlarmReceiver alarm = new TSAlarmReceiver();
-
-
+    private boolean activated = false;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        activated = (PendingIntent.getBroadcast(this, 0, new Intent(this, TSAlarmReceiver.class), PendingIntent.FLAG_NO_CREATE) != null);
+        Log.d(RequestHelper.DEBUG_TAG, "activated is" + String.valueOf(activated));
+        
         tsfpa = new TSFragmentPageAdapter(this, getSupportFragmentManager());
         vp = (ViewPager) findViewById(R.id.pager);
         vp.setAdapter(tsfpa);
@@ -61,6 +63,12 @@ public class TerremotosSeguimiento extends ActionBarActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem mi = menu.findItem(R.id.activation_switch);
+        if (activated){
+            mi.setTitle(getString(R.string.cancel_text));
+        }else{
+            mi.setTitle(getString(R.string.start_text));
+        }
         return true;
     }
 
@@ -69,20 +77,23 @@ public class TerremotosSeguimiento extends ActionBarActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // When the user clicks START ALARM, set the alarm.
-            case R.id.start_action:
-                alarm.setAlarm(this);
-                Log.v(RequestHelper.DEBUG_TAG, "Alarm activated");
-                return true;
-            // When the user clicks CANCEL ALARM, cancel the alarm. 
-            case R.id.cancel_action:
-                alarm.cancelAlarm(this);
-                Log.v(RequestHelper.DEBUG_TAG, "Alarm deactivated");
+            case R.id.activation_switch:
+                if(!activated){
+                    alarm.setAlarm(this);
+                    item.setTitle(getString(R.string.cancel_text));
+                    Log.v(RequestHelper.DEBUG_TAG, "Alarm activated");
+                    activated = true;
+                }else{
+                    alarm.cancelAlarm(this);
+                    item.setTitle(getString(R.string.start_text));
+                    Log.v(RequestHelper.DEBUG_TAG, "Alarm deactivated");
+                    activated = false;
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
     public static class TSFragmentPageAdapter extends FragmentPagerAdapter {
         private Context context;
         public TSFragmentPageAdapter(Context context, FragmentManager fm) {
@@ -110,3 +121,5 @@ public class TerremotosSeguimiento extends ActionBarActivity
         }
     }
 }
+
+

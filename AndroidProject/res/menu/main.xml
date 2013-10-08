@@ -16,10 +16,6 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:terremotosseguimiento="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/start_action"
-        terremotosseguimiento:showAsAction="ifRoom|withText"
-        android:title="@string/start_text" />
-    <item android:id="@+id/cancel_action"
-        terremotosseguimiento:showAsAction="ifRoom|withText"
-        android:title="@string/cancel_text" />
+    <item android:id="@+id/activation_switch"
+        terremotosseguimiento:showAsAction="ifRoom|withText" />
 </menu>
