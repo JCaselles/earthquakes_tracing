@@ -29,11 +29,13 @@ public class TSDetailsFragment extends Fragment {
         HashMap<String, String> eqData = (HashMap<String, String>) intent.getSerializableExtra(TSService.EQ_DATA);
 
         if (eqData != null){ 
+            TextView title = (textView) getView().findViewById(R.id.title);
             TextView time  = (TextView) getView().findViewById(R.id.time);
             TextView date = (TextView) getView().findViewById(R.id.date);
             TextView magnitude = (TextView) getView().findViewById(R.id.magnitude);
             TextView location = (TextView) getView().findViewById(R.id.location);
 
+            title.setText(getString(R.string.display_title));
             time.setText(getString(R.string.time_label) +
                          "\t\t" + eqData.get("time"));
             date.setText(getString(R.string.date_label) +
