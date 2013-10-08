@@ -3,7 +3,6 @@ package com.arnauoriols.apps.terremotosseguimiento;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,6 @@ import java.util.HashMap;
 
 
 public class TSDetailsFragment extends Fragment {
-    private String mText;
-
-    public TabContentFragment(String text) {
-        mText = text;
-    }
-
-    public String getText() {
-        return mText;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
