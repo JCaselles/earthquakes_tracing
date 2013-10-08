@@ -6,7 +6,6 @@ TODO LIST
     - ActionBar with tabs?
 4. Retrieve more info from website:
     - Map with location
-5. Add proper icon
 6. Display usage info when not activated
 7. Implement boot persistency
 
