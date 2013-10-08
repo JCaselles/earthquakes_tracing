@@ -12,6 +12,8 @@ package com.arnauorriols.apps.terremotosseguimiento;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.pm.PackageManager;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -38,12 +40,24 @@ public class TSAlarmReceiver extends WakefulBroadcastReceiver {
                                SystemClock.elapsedRealtime() + 10 * 1000,
                                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                                pi);
+        ComponentName receiver = new ComponentName(context, TSBootReceiver.class);
+        PackageManager pm = context.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
         Log.v(RequestHelper.DEBUG_TAG, "Alarm is setted");
     }
     public void cancelAlarm(Context context) {
         // If the alarm has been set, cancel it.
         if (am != null) {
             am.cancel(pi);
+        ComponentName receiver = new ComponentName(context, TSBootReceiver.class);
+        PackageManager pm = context.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
         }
     }
 }
