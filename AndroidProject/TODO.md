@@ -3,6 +3,7 @@ TODO LIST
 
 3. Add ActionBar and fragments -> fragment last, all, and click to view
     - ActionBar with tabs?
+3. Fix crash, and possible not firing issue when idle
 4. Retrieve more info from website:
     - Map with location
 5. Silent mode
