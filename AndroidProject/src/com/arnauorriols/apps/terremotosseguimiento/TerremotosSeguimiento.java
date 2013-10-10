@@ -66,10 +66,17 @@ public class TerremotosSeguimiento extends ActionBarActivity
         }
     }
 
+    public void resetViewPager(){
+        //vp.getAdapter().notifyDataSetChanged();
+        vp.setAdapter(null);
+        vp.setAdapter(new TSFragmentPageAdapter(this, getSupportFragmentManager()));
+        Log.v(RequestHelper.DEBUG_TAG, "List should be updated");
+    }
+
     @Override
     protected void onNewIntent(Intent intent){
         setIntent(intent);
-        TSListFragment.updateEqList((ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA));
+        resetViewPager();
     }
 
     @Override
@@ -123,7 +130,7 @@ public class TerremotosSeguimiento extends ActionBarActivity
             Fragment f = null;
             switch (position) {
                 case 0:
-                    f = Fragment.instantiate(context, TSDetailsFragment.class.getName());
+                    f = Fragment.instantiate(context, TSListFragment.class.getName());
                     break;
                 case 1:
                     f = Fragment.instantiate(context, TSDetailsFragment.class.getName());

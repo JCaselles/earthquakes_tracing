@@ -7,7 +7,7 @@ import android.util.Log;
 import android.os.Bundle;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 
 public class TSListFragment extends ListFragment {
 
@@ -21,23 +21,37 @@ public class TSListFragment extends ListFragment {
                                           R.id.row_magnitude,
                                           R.id.row_location};
 
-    private static List<HashMap<String, String>> eqList;
+    private static ArrayList<HashMap<String, String>> eqList;
 
     @Override
     public void onActivityCreated (Bundle savedInstanceState){
+        super.onActivityCreated (savedInstanceState);
+        if (eqList == null){
+        Log.v(RequestHelper.DEBUG_TAG, "eqList is null!");
+        eqList = new ArrayList<HashMap<String, String>>();
+        HashMap<String, String> eqRow = new HashMap<String, String>();
+        eqRow.put("time", "loading data...");
+        eqRow.put("date", "");
+        eqRow.put("magnitude", "");
+        eqRow.put("location", "");
+        eqList.add(eqRow);
+        }
         Log.v(RequestHelper.DEBUG_TAG, "eqList: " + eqList.toString());
-        SimpleAdapter sa = new SimpleAdapter(getActivity(),
-                                             eqList,
-                                             R.layout.row_layout,
-                                             FROM_LIST,
-                                             TO_LIST);
-
-        setListAdapter(sa);
+        refreshList();
     }
 
-    public static void updateEqList (List<HashMap<String, String>> _eqList){
+    public static void updateEqList (ArrayList<HashMap<String, String>> _eqList){
         eqList = _eqList;
         Log.v(RequestHelper.DEBUG_TAG, "static eqList updated: " + eqList.toString());
+    }
+
+    public void refreshList (){
+        SimpleAdapter sa = new SimpleAdapter(getActivity(),
+                                            eqList,
+                                            R.layout.row_layout,
+                                            FROM_LIST,
+                                            TO_LIST);
+        setListAdapter(sa);
     }
 }
 

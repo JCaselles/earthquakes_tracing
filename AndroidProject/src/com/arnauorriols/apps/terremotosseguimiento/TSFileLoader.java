@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 import android.util.Log;
 import android.os.AsyncTask;
+import android.support.v7.app.ActionBarActivity;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -28,6 +29,7 @@ public class TSFileLoader extends AsyncTask<Void, Void, ArrayList<HashMap<String
             eqList = (ArrayList<HashMap<String, String>>) ois.readObject();
             fis.close();
         }catch (FileNotFoundException e){
+            Log.v(RequestHelper.DEBUG_TAG, "File not found. Fetching from url");
             eqList = new RequestHelper(context).fetchEarthquakeList(2);
         }catch (Exception e){
             Log.e(RequestHelper.DEBUG_TAG, "Error: ", e);
@@ -43,6 +45,7 @@ public class TSFileLoader extends AsyncTask<Void, Void, ArrayList<HashMap<String
     protected void onProgressUpdate(Void... v){}
     protected void onPostExecute(ArrayList<HashMap<String, String>> result){
         TSListFragment.updateEqList(result);
+        ((TerremotosSeguimiento)context).resetViewPager();
     }
 
 }

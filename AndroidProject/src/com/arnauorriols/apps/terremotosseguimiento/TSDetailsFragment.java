@@ -38,13 +38,13 @@ public class TSDetailsFragment extends Fragment {
 
             title.setText(getString(R.string.display_title));
             time.setText(getString(R.string.time_label) +
-                         "\t\t" + eqData.get("time"));
+                         "\t\t" + eqLast.get("time"));
             date.setText(getString(R.string.date_label) +
-                         "\t\t" + eqData.get("date"));
+                         "\t\t" + eqLast.get("date"));
             magnitude.setText(getString(R.string.magnitude_label) +
-                              "\t\t" + eqData.get("magnitude"));
+                              "\t\t" + eqLast.get("magnitude"));
             location.setText(getString(R.string.location_label) +
-                             "\t\t" + eqData.get("location"));
+                             "\t\t" + eqLast.get("location"));
         }else{
             TextView title = (TextView) getView().findViewById(R.id.title);
             TextView help = (TextView) getView().findViewById(R.id.time);
