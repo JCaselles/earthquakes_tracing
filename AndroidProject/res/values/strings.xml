@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Notificador Sismológico</string>
+    <string name="app_name">Sismo Alertas</string>
     <string name="new_eq">Nuevo terremoto:</string>
     <string name="start_text">Activar</string>
     <string name="cancel_text">Desactivar</string>
+    <string name="list_tab_label">Últimos 2 dias</string>
+    <string name="details_tab_label">Detalles</string>
     <string name="display_title">Información del último terremoto</string>
     <string name="time_label">Hora:</string>
     <string name="date_label">Dia:</string>
@@ -11,5 +13,6 @@
     <string name="location_label">Localización:</string>
     <string name="usage_title">Utilización:</string>
     <string name="usage_explanation">Seleccione \"Activar\" en el menú para empezar a monitorizar el registro de terremotos. Recibirá una notificación cuando ocurra un nuevo terremoto. Clicando dicha notificación obtendrá todos los detalles del terremoto.\n\nEsta applicación consume muy pocos datos. Aún así, si lo desea puede desactivarla seleccionando \"Desactivar\".\n\nEsta applicación esta en una fase muy primitiva, en breve serán añadidas muchas más funcionalidades.</string>
+    <string name="unknown_error">Que embarazoso. Ha habido un error fatal. Avisame a dev@arnauorriols.com</string>
 
 </resources>

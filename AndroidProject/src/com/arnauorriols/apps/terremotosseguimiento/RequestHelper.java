@@ -55,7 +55,7 @@ public class RequestHelper {
         }
     }
 
-    public List<HashMap<String, String>> fetchEarthquakeList(int listDays) {
+    public ArrayList<HashMap<String, String>> fetchEarthquakeList(int listDays) {
 
         //InputStream is = null;
 
@@ -91,7 +91,7 @@ public class RequestHelper {
         HashMap<String, String> queryString = new HashMap<String, String>();
         queryString.put("zona", "1");
         queryString.put("cantidad_dias", Integer.toString(listDays));
-        List<HashMap<String, String>> eqList = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> eqList = new ArrayList<HashMap<String, String>>();
         if (checkNetwork()){
             String completeUrl = BASE_URL + "sismoListadoTerremotos.do";
             try{

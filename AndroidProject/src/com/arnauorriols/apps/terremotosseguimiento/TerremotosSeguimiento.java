@@ -17,6 +17,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.content.Context;
 
+import java.util.HashMap;
+import java.util.ArrayList;
+
 public class TerremotosSeguimiento extends ActionBarActivity
 {
     private static final int MAX_ITEMS = 2;
@@ -54,18 +57,19 @@ public class TerremotosSeguimiento extends ActionBarActivity
                 getSupportActionBar().setSelectedNavigationItem(position);
             }
         });
-        for (int i = 0; i < MAX_ITEMS; i++) {
-            ab.addTab(
-                    ab.newTab()
-                            .setText("Tab " + (i + 1))
-                            .setTabListener(tl));
-        }
 
+        ab.addTab(ab.newTab().setText(getString(R.string.list_tab_label)).setTabListener(tl));
+        ab.addTab(ab.newTab().setText(getString(R.string.details_tab_label)).setTabListener(tl));
+
+        if (!getIntent().hasExtra(TSService.EQ_DATA)){
+            new TSFileLoader(this).execute();
+        }
     }
 
     @Override
     protected void onNewIntent(Intent intent){
         setIntent(intent);
+        TSListFragment.updateEqList((ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA));
     }
 
     @Override

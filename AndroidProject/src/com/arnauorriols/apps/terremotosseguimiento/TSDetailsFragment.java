@@ -2,7 +2,6 @@ package com.arnauorriols.apps.terremotosseguimiento;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 import android.content.Intent;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 
 
 public class TSDetailsFragment extends Fragment {
@@ -26,9 +26,10 @@ public class TSDetailsFragment extends Fragment {
         super.onResume();
 
         Intent intent = getActivity().getIntent();
-        HashMap<String, String> eqData = (HashMap<String, String>) intent.getSerializableExtra(TSService.EQ_DATA);
+        ArrayList<HashMap<String, String>> eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA);
 
         if (eqData != null){ 
+            HashMap<String, String> eqLast = eqData.get(0);
             TextView title = (TextView) getView().findViewById(R.id.title);
             TextView time  = (TextView) getView().findViewById(R.id.time);
             TextView date = (TextView) getView().findViewById(R.id.date);

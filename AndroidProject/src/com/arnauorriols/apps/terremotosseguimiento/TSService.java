@@ -28,14 +28,14 @@ import java.lang.NullPointerException;
 import java.io.StreamCorruptedException;
 import java.io.OptionalDataException;
 import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 
 public class TSService extends IntentService {
 
     private HashMap<String, String> formerLatest;
 
-    private static final String LAST_LATEST = "lastlatest.ser";
-    private static final String LIST_LATEST = "latestlist.ser";
+    public static final String LAST_LATEST = "lastlatest.ser";
+    public static final String LIST_LATEST = "latestlist.ser";
     private static final int NOTIFICATION_ID = 001;
     public static final String EQ_DATA = "com.arnauorriols.apps.terremotosseguimiento.EQDATA";
     private NotificationManager nm;
@@ -93,8 +93,8 @@ public class TSService extends IntentService {
             String bigMsg = latestEQ.get("time") + " -- " + latestEQ.get("date") +
                                     "\n" + latestEQ.get("magnitude") + " -- " +
                                     latestEQ.get("location");
-            sendNotification(shortMsg, bigMsg, latestEQ);
-            List <HashMap<String, String>> listLatest = rh.fetchEarthquakeList(2);
+            ArrayList <HashMap<String, String>> listLatest = rh.fetchEarthquakeList(2);
+            sendNotification(shortMsg, bigMsg, listLatest);
             FileOutputStream fos = null;
             try{
                 fos = openFileOutput(LAST_LATEST, Context.MODE_PRIVATE);
@@ -125,11 +125,11 @@ public class TSService extends IntentService {
     }
 
 
-    private void sendNotification(String shortMsg, String bigMsg, HashMap<String, String> eqData) {
+    private void sendNotification(String shortMsg, String bigMsg, ArrayList<HashMap<String, String>> eqData) {
         nm = (NotificationManager) this.getSystemService(
                                         Context.NOTIFICATION_SERVICE);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-            new Intent(this, TerremotosSeguimiento.class).putExtra(EQ_DATA, eqData), PendingIntent.FLAG_UPDATE_CURRENT | Intent.FLAG_ACTIVITY_NEW_TASK);
+            new Intent(this, TerremotosSeguimiento.class).putExtra(EQ_DATA, (ArrayList) eqData), PendingIntent.FLAG_UPDATE_CURRENT | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
