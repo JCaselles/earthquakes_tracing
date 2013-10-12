@@ -1,9 +1,6 @@
 TODO LIST
 =========
 
-3. Add ActionBar and fragments -> fragment last, all, and click to view
-    - ActionBar with tabs?
-3. Fix crash, and possible not firing issue when idle
 4. Retrieve more info from website:
     - Map with location
 5. Silent mode
@@ -14,3 +11,8 @@ TODO LIST
 7. CLEAN PYTHON AS WELL
 8. Rewrite Support ActionBar documentation. It sucks
 
+Issues
+======
+- SecurityException -> Android 4.2 requires vibrator permission
+- IllegalStateException: Activity has been destroyed (??)
+- On Gingerbread, list background turns white while scrolling
