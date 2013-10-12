@@ -46,7 +46,7 @@ public class RequestHelper {
     public RequestHelper (Context context){
         this.context = context;
     }
-    private boolean checkNetwork(){
+    public boolean checkNetwork(){
         ConnectivityManager connMgr = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
