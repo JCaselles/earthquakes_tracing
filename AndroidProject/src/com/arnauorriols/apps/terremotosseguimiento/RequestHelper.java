@@ -15,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
@@ -141,8 +143,6 @@ public class RequestHelper {
         Log.v(DEBUG_TAG, eqData.get("location"));
         return eqData;
     }
-
-
 
 
     //private String readIt(InputStream is) throws IOException{

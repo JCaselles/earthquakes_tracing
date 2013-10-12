@@ -15,8 +15,8 @@
     />
 <View
     android:layout_width="match_parent"
-    android:layout_height="2dp"
-    android:background="#343434"
+    android:layout_height="1dp"
+    android:background="#787878"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"/>
 <ScrollView 
