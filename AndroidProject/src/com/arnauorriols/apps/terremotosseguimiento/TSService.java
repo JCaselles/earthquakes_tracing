@@ -49,78 +49,81 @@ public class TSService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent){
-        FileInputStream fis = null;
-        try{
-            fis = openFileInput(LAST_LATEST);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            formerLatest = (HashMap<String, String>) ois.readObject();
-            Log.v(RequestHelper.DEBUG_TAG, "Former earthquake data found.");
-            Log.v(RequestHelper.DEBUG_TAG, "lastLatest = " + formerLatest.toString());
-
-        }catch (FileNotFoundException e){
-            Log.v(RequestHelper.DEBUG_TAG, "Fresh start. No earthquake data found");
-            formerLatest = new HashMap<String, String>();
-            formerLatest.put("date", "");
-            formerLatest.put("time", "");
-            formerLatest.put("magnitude", "");
-            formerLatest.put("location", "");
-        }catch (NullPointerException e){
-            Log.v(RequestHelper.DEBUG_TAG, "NullPointerException", e);
-        }catch (StreamCorruptedException e){
-            Log.e(RequestHelper.DEBUG_TAG, "corrupted Stream when opening fis");
-        }catch (ClassNotFoundException e){
-            Log.e(RequestHelper.DEBUG_TAG, "ClassNotFoundException when opening fis");
-        }catch (IOException e){
-            Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fis");
-        }finally{
-            if (fis != null) {
-                try{
-                    fis.close();
-                }catch (IOException e){
-                    Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fis");
-                }
-            }
-        }
         RequestHelper rh = new RequestHelper(this);
-        HashMap<String, String> latestEQ = rh.fetchLastEarthquake();
-
-        if (!formerLatest.equals(latestEQ)) {
-            Log.v(RequestHelper.DEBUG_TAG, "new eq! former = " + formerLatest.toString() + 
-                                           ", latest = " + latestEQ.toString());
-
-            String shortMsg = latestEQ.get("magnitude") + " -- " +
-                                           latestEQ.get("location");
-            String bigMsg = latestEQ.get("time") + " -- " + latestEQ.get("date") +
-                                    "\n" + latestEQ.get("magnitude") + " -- " +
-                                    latestEQ.get("location");
-            ArrayList <HashMap<String, String>> listLatest = rh.fetchEarthquakeList(2);
-            sendNotification(shortMsg, bigMsg, listLatest);
-            FileOutputStream fos = null;
+        if(rh.checkNetwork()){
+            FileInputStream fis = null;
             try{
-                fos = openFileOutput(LAST_LATEST, Context.MODE_PRIVATE);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(latestEQ);
-                oos.flush();
-                fos.close();
-                fos = openFileOutput(LIST_LATEST, Context.MODE_PRIVATE);
-                oos = new ObjectOutputStream(fos);
-                oos.writeObject(listLatest);
-                Log.v(RequestHelper.DEBUG_TAG, "Writting files. whole list: " + listLatest.toString());
-                oos.flush();
+                fis = openFileInput(LAST_LATEST);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                formerLatest = (HashMap<String, String>) ois.readObject();
+                Log.v(RequestHelper.DEBUG_TAG, "Former earthquake data found.");
+                Log.v(RequestHelper.DEBUG_TAG, "lastLatest = " + formerLatest.toString());
+
+            }catch (FileNotFoundException e){
+                Log.v(RequestHelper.DEBUG_TAG, "Fresh start. No earthquake data found");
+                formerLatest = new HashMap<String, String>();
+                formerLatest.put("date", "");
+                formerLatest.put("time", "");
+                formerLatest.put("magnitude", "");
+                formerLatest.put("location", "");
+            }catch (NullPointerException e){
+                Log.v(RequestHelper.DEBUG_TAG, "NullPointerException", e);
+            }catch (StreamCorruptedException e){
+                Log.e(RequestHelper.DEBUG_TAG, "corrupted Stream when opening fis");
+            }catch (ClassNotFoundException e){
+                Log.e(RequestHelper.DEBUG_TAG, "ClassNotFoundException when opening fis");
             }catch (IOException e){
-                Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fos");
+                Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fis");
             }finally{
-                if (fos != null){
+                if (fis != null) {
                     try{
-                        Log.v(RequestHelper.DEBUG_TAG, "Files saved, closing fos");
-                        fos.close();
+                        fis.close();
                     }catch (IOException e){
-                        Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fos");
+                        Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fis");
                     }
                 }
             }
-        }else{
-            Log.v(RequestHelper.DEBUG_TAG, "No new earthquakes. We are safe");
+
+            HashMap<String, String> latestEQ = rh.fetchLastEarthquake();
+
+            if (!formerLatest.equals(latestEQ)) {
+                Log.v(RequestHelper.DEBUG_TAG, "new eq! former = " + formerLatest.toString() + 
+                                               ", latest = " + latestEQ.toString());
+
+                String shortMsg = latestEQ.get("magnitude") + " -- " +
+                                               latestEQ.get("location");
+                String bigMsg = latestEQ.get("time") + " -- " + latestEQ.get("date") +
+                                        "\n" + latestEQ.get("magnitude") + " -- " +
+                                        latestEQ.get("location");
+                ArrayList <HashMap<String, String>> listLatest = rh.fetchEarthquakeList(2);
+                sendNotification(shortMsg, bigMsg, listLatest);
+                FileOutputStream fos = null;
+                try{
+                    fos = openFileOutput(LAST_LATEST, Context.MODE_PRIVATE);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(latestEQ);
+                    oos.flush();
+                    fos.close();
+                    fos = openFileOutput(LIST_LATEST, Context.MODE_PRIVATE);
+                    oos = new ObjectOutputStream(fos);
+                    oos.writeObject(listLatest);
+                    Log.v(RequestHelper.DEBUG_TAG, "Writting files. whole list: " + listLatest.toString());
+                    oos.flush();
+                }catch (IOException e){
+                    Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fos");
+                }finally{
+                    if (fos != null){
+                        try{
+                            Log.v(RequestHelper.DEBUG_TAG, "Files saved, closing fos");
+                            fos.close();
+                        }catch (IOException e){
+                            Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fos");
+                        }
+                    }
+                }
+            }else{
+                Log.v(RequestHelper.DEBUG_TAG, "No new earthquakes. We are safe");
+            }
         }
     }
 
