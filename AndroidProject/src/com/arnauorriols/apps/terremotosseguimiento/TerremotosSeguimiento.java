@@ -60,7 +60,7 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
 
         ab.addTab(ab.newTab().setText(getString(R.string.list_tab_label)).setTabListener(tl));
         ab.addTab(ab.newTab().setText(getString(R.string.details_tab_label)).setTabListener(tl));
-        if(new RequestManager(this).checkNetwork()){
+        if(new RequestHelper(this).checkNetwork()){
             if (!getIntent().hasExtra(TSService.EQ_DATA)){
                 new TSFileLoader(this).execute();
             }else{
