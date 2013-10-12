@@ -20,7 +20,7 @@ import android.content.Context;
 import java.util.HashMap;
 import java.util.ArrayList;
 
-public class TerremotosSeguimiento extends ActionBarActivity
+public class TerremotosSeguimiento extends ActionBarActivity implements TSListFragment.OnRowSelectedListener
 {
     private static final int MAX_ITEMS = 2;
     private TSFragmentPageAdapter tsfpa;
@@ -76,6 +76,8 @@ public class TerremotosSeguimiento extends ActionBarActivity
     @Override
     protected void onNewIntent(Intent intent){
         setIntent(intent);
+        ArrayList<HashMap<String, String>> eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA);
+        TSListFragment.updateEqList(eqData);
         resetViewPager();
     }
 
@@ -138,6 +140,15 @@ public class TerremotosSeguimiento extends ActionBarActivity
             }
             return f;
         }
+    }
+
+    @Override
+    public void onRowSelected(HashMap<String, String> eqData){
+        ArrayList<HashMap<String, String>> eqList = new ArrayList<HashMap<String, String>>();
+        eqList.add(eqData);
+        Intent intent = new Intent().putExtra(TSService.EQ_DATA, eqList);
+        setIntent(intent);
+        vp.setCurrentItem(1);
     }
 }
 

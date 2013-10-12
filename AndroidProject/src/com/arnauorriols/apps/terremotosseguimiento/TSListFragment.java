@@ -5,11 +5,17 @@ import android.widget.SimpleAdapter;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.os.Bundle;
+import android.app.Activity;
+import android.widget.ListView;
+import android.view.View;
+
 
 import java.util.HashMap;
 import java.util.ArrayList;
 
 public class TSListFragment extends ListFragment {
+
+    private OnRowSelectedListener orsl;
 
     private static final String[] FROM_LIST = {"time",
                                              "date",
@@ -24,8 +30,8 @@ public class TSListFragment extends ListFragment {
     private static ArrayList<HashMap<String, String>> eqList;
 
     @Override
-    public void onActivityCreated (Bundle savedInstanceState){
-        super.onActivityCreated (savedInstanceState);
+    public void onResume(){
+        super.onResume();
         if (eqList == null){
         Log.v(RequestHelper.DEBUG_TAG, "eqList is null!");
         eqList = new ArrayList<HashMap<String, String>>();
@@ -52,6 +58,25 @@ public class TSListFragment extends ListFragment {
                                             FROM_LIST,
                                             TO_LIST);
         setListAdapter(sa);
+    }
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        try{
+            orsl = (OnRowSelectedListener) activity;
+        }catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + "Must implement OnRowSelectedListener");
+        }
+    }
+
+    @Override
+    public void onListItemClick (ListView l, View v, int position, long id) {
+        orsl.onRowSelected(eqList.get(position));
+    }
+
+    public interface OnRowSelectedListener {
+        public void onRowSelected(HashMap<String, String> eqData);
     }
 }
 
