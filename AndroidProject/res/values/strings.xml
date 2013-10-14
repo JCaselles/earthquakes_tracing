@@ -6,7 +6,10 @@
     <string name="cancel_text">Desactivar</string>
     <string name="list_tab_label">Últimos 2 dias</string>
     <string name="details_tab_label">Detalles</string>
-    <string name="display_title">Información del último terremoto</string>
+    <string name="details_title">Detalles del terremoto</string>
+    <string name="last_eq_title">Información del último terremoto</string>
+    <string name="please_wait_title">Por favor, espere...</string>
+
     <string name="time_label">Hora:</string>
     <string name="date_label">Dia:</string>
     <string name="magnitude_label">Magnitud:</string>

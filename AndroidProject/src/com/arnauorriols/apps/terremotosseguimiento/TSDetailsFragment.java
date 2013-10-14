@@ -28,10 +28,11 @@ public class TSDetailsFragment extends Fragment {
         if (isVisibleToUser){
             Intent intent = getActivity().getIntent();
             ArrayList<HashMap<String, String>> eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA);
+            boolean details = false;
             if (eqData == null) {
                 eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSListFragment.INTENT_DETAILS);
+                details = true;
             }
-
             if (eqData != null){ 
                 Log.v(RequestHelper.DEBUG_TAG, "eqData == " + eqData.toString());
                 HashMap<String, String> eqLast = eqData.get(0);
@@ -41,7 +42,11 @@ public class TSDetailsFragment extends Fragment {
                 TextView magnitude = (TextView) getView().findViewById(R.id.magnitude);
                 TextView location = (TextView) getView().findViewById(R.id.location);
 
-                title.setText(getString(R.string.display_title));
+                if (details) {
+                    title.setText(getString(R.string.details_title));
+                }else{
+                    title.setText(getString(R.string.last_eq_title));
+                }
                 time.setText(getString(R.string.time_label) +
                              "\t\t" + eqLast.get("time"));
                 date.setText(getString(R.string.date_label) +
