@@ -13,10 +13,9 @@ TODO LIST
 
 Issues
 ======
-- SecurityException -> Android 4.2 requires vibrator permission
-- IllegalStateException: Activity has been destroyed (??)
-- On Gingerbread, list background turns white while scrolling
-- Deactivate button not deactivating?
-- When click on notification open details tab
-- Deactivate button not deactivating?
-- When click on notification open details tab
+<del>- SecurityException -> Android 4.2 requires vibrator permission</del>
+- IllegalStateException: Activity has been destroyed (Needs further revision)
+<del>- On Gingerbread, list background turns white while scrolling</del>
+<del>- Deactivate button not deactivating?</del>
+<del>- When click on notification open details tab</del>
+- Deactivate button not deactivating? (Needs further revision)
