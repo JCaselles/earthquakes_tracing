@@ -51,6 +51,7 @@ public class TSAlarmReceiver extends WakefulBroadcastReceiver {
     public void cancelAlarm(Context context) {
         // If the alarm has been set, cancel it.
         if (am != null) {
+            Log.v(RequestHelper.DEBUG_TAG, "am is not null, canceling alarm");
             am.cancel(pi);
         ComponentName receiver = new ComponentName(context, TSBootReceiver.class);
         PackageManager pm = context.getPackageManager();
