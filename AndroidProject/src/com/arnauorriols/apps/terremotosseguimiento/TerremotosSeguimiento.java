@@ -27,6 +27,7 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
     private ViewPager vp;
     private TSAlarmReceiver alarm = new TSAlarmReceiver();
     private boolean activated = false;
+    private TSFileLoader tsfl;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -62,13 +63,23 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
         ab.addTab(ab.newTab().setText(getString(R.string.details_tab_label)).setTabListener(tl));
         if(new RequestHelper(this).checkNetwork()){
             if (!getIntent().hasExtra(TSService.EQ_DATA)){
-                new TSFileLoader(this).execute();
+                tsfl = new TSFileLoader(this);
+                tsfl.execute();
             }else{
                 importIntentExtra(getIntent());
             }
         }
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (tsfl != null) {
+            tsfl.cancel(true);
+        }
+    }
+
 
     public void importIntentExtra(Intent intent){
         ArrayList<HashMap<String, String>> eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA);
@@ -88,6 +99,7 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
     protected void onNewIntent(Intent intent){
         setIntent(intent);
         importIntentExtra(intent);
+        vp.setCurrentItem(1);
     }
 
     @Override
@@ -155,7 +167,7 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
     public void onRowSelected(HashMap<String, String> eqData){
         ArrayList<HashMap<String, String>> eqList = new ArrayList<HashMap<String, String>>();
         eqList.add(eqData);
-        Intent intent = new Intent().putExtra(TSService.EQ_DATA, eqList);
+        Intent intent = new Intent().putExtra(TSListFragment.INTENT_DETAILS, eqList);
         setIntent(intent);
         vp.setCurrentItem(1);
     }

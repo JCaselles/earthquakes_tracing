@@ -28,7 +28,9 @@ public class TSDetailsFragment extends Fragment {
         if (isVisibleToUser){
             Intent intent = getActivity().getIntent();
             ArrayList<HashMap<String, String>> eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA);
-            Log.v(RequestHelper.DEBUG_TAG, "Details onResume called.");
+            if (eqData == null) {
+                eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSListFragment.INTENT_DETAILS);
+            }
 
             if (eqData != null){ 
                 Log.v(RequestHelper.DEBUG_TAG, "eqData == " + eqData.toString());

@@ -50,15 +50,21 @@ public class TSAlarmReceiver extends WakefulBroadcastReceiver {
     }
     public void cancelAlarm(Context context) {
         // If the alarm has been set, cancel it.
-        if (am != null) {
-            Log.v(RequestHelper.DEBUG_TAG, "am is not null, canceling alarm");
+        Intent intent = new Intent (context, TSAlarmReceiver.class);
+        pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_NO_CREATE);
+        if (pi != null) {
+            Log.v(RequestHelper.DEBUG_TAG, "Intent found, canceling alarm");
+            am = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
             am.cancel(pi);
-        ComponentName receiver = new ComponentName(context, TSBootReceiver.class);
-        PackageManager pm = context.getPackageManager();
+            if (PendingIntent.getBroadcast(context, 0, new Intent(context, TSAlarmReceiver.class), PendingIntent.FLAG_NO_CREATE) == null) {
+                Log.v(RequestHelper.DEBUG_TAG, "Alarm successfully canceled");
+            }
+            ComponentName receiver = new ComponentName(context, TSBootReceiver.class);
+            PackageManager pm = context.getPackageManager();
 
-        pm.setComponentEnabledSetting(receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP);
+            pm.setComponentEnabledSetting(receiver,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP);
         }
     }
 }

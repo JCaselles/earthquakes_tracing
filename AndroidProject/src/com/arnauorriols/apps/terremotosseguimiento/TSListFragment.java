@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 public class TSListFragment extends ListFragment {
+    public static final String INTENT_DETAILS =
+            "com.arnauorriols.apps.terremotosseguimiento.INTENTDETAILS";
 
     private OnRowSelectedListener orsl;
 
@@ -32,6 +34,7 @@ public class TSListFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
+        getListView().setCacheColorHint(0); // Fixes white color when scrolling
         if (eqList == null){
         Log.v(RequestHelper.DEBUG_TAG, "eqList is null!");
         eqList = new ArrayList<HashMap<String, String>>();
