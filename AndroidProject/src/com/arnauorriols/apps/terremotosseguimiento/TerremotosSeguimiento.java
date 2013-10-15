@@ -92,6 +92,7 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
 
     @Override
     public void onStop() {
+        super.onStop();
         EasyTracker.getInstance(this).activityStop(this);
     }
 
