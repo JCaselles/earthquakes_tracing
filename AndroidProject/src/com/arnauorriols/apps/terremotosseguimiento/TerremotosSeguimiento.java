@@ -17,6 +17,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.content.Context;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 
