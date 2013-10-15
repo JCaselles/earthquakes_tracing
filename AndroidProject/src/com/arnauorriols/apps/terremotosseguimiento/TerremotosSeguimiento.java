@@ -101,7 +101,7 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
         ArrayList<HashMap<String, String>> eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA);
         TSListFragment.updateEqList(eqData);
         resetViewPager();
-        vp.setCurrentItem(1);
+        vp.setCurrentItem(1); // TOFIX: Causes crash when app been created with EQDATA intent -> fragment returns nullPointerException
     }
 
 
