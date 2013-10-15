@@ -66,7 +66,7 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
                 tsfl = new TSFileLoader(this);
                 tsfl.execute();
             }else{
-                importIntentExtra(getIntent());
+                importEQDATAIntent(getIntent());
             }
         }
 
@@ -81,10 +81,24 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
     }
 
 
-    public void importIntentExtra(Intent intent){
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+
+    @Override
+    public void onStop() {
+        EasyTracker.getInstance(this).activityStop(this);
+    }
+
+
+    public void importEQDATAIntent(Intent intent){
         ArrayList<HashMap<String, String>> eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA);
         TSListFragment.updateEqList(eqData);
         resetViewPager();
+        vp.setCurrentItem(1);
     }
 
 
@@ -98,8 +112,7 @@ public class TerremotosSeguimiento extends ActionBarActivity implements TSListFr
     @Override
     protected void onNewIntent(Intent intent){
         setIntent(intent);
-        importIntentExtra(intent);
-        vp.setCurrentItem(1);
+        importEQDATAIntent(intent);
     }
 
     @Override
