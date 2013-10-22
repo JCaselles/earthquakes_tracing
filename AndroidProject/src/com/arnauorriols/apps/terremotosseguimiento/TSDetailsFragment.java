@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.content.Intent;
 import android.util.Log;
+import android.app.Activity;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -15,12 +16,42 @@ import java.util.ArrayList;
 
 public class TSDetailsFragment extends Fragment {
 
+    private TextView title;
+    private TextView time;
+    private TextView date;
+    private TextView magnitude;
+    private TextView location;
+    private OnFragmentReadyListener ofrl;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public void onAttach (Activity activity) {
+        super.onAttach (activity);
+        try {
+            ofrl = (OnFragmentReadyListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() +
+                                " must implement OnFragmentReadyListener.");
+        }
+    }
+
+    @Override
+    public View onCreateView (LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View fragView = inflater.inflate(R.layout.fragment_last, container, false);
         return fragView;
     }
+
+    @Override
+    public void onViewCreated (View view, Bundle savedInstanceState) {
+        super.onViewCreated (view, savedInstanceState);
+        title = (TextView) getView().findViewById(R.id.title);
+        time  = (TextView) getView().findViewById(R.id.time);
+        date = (TextView) getView().findViewById(R.id.date);
+        magnitude = (TextView) getView().findViewById(R.id.magnitude);
+        location = (TextView) getView().findViewById(R.id.location);
+        ofrl.onFragmentReady();
+    }
+
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser){
@@ -36,12 +67,6 @@ public class TSDetailsFragment extends Fragment {
             if (eqData != null){ 
                 Log.v(RequestHelper.DEBUG_TAG, "eqData == " + eqData.toString());
                 HashMap<String, String> eqLast = eqData.get(0);
-                TextView title = (TextView) getView().findViewById(R.id.title);
-                TextView time  = (TextView) getView().findViewById(R.id.time);
-                TextView date = (TextView) getView().findViewById(R.id.date);
-                TextView magnitude = (TextView) getView().findViewById(R.id.magnitude);
-                TextView location = (TextView) getView().findViewById(R.id.location);
-
                 if (details) {
                     title.setText(getString(R.string.details_title));
                 }else{
@@ -56,12 +81,18 @@ public class TSDetailsFragment extends Fragment {
                 location.setText(getString(R.string.location_label) +
                                  "\t\t" + eqLast.get("location"));
             }else{
-                TextView title = (TextView) getView().findViewById(R.id.title);
-                TextView help = (TextView) getView().findViewById(R.id.time);
                 title.setText(getString(R.string.usage_title));
-                help.setText(getString(R.string.usage_explanation));
+                time.setText(getString(R.string.usage_explanation));
             }
         }
+    }
+
+    /**
+     * Interface that should implement the activity. It will be called when the
+     * fragment is fully loaded: when onViewCreated is called.
+     */
+    public interface OnFragmentReadyListener {
+        public void onFragmentReady();
     }
 
 }

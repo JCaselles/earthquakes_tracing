@@ -23,7 +23,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 public class TerremotosSeguimiento extends ActionBarActivity
-                            implements TSListFragment.OnRowSelectedListener {
+                    implements TSListFragment.OnRowSelectedListener,
+                               TSDetailsFragment.OnFragmentReadyListener {
 
     private static final int MAX_ITEMS = 2;
     private TSFragmentPageAdapter tsfpa;
@@ -108,6 +109,17 @@ public class TerremotosSeguimiento extends ActionBarActivity
 
 
     /**
+     * Implementation of TSDetailsFragment callback. Used to wait for the
+     * fragment's layout to be fully loaded before switching to it and
+     * modifying its views.
+     */
+    @Override
+    public void onFragmentReady (){
+        vp.setCurrentItem(1);
+    }
+
+
+    /**
      * Cancels TSFileLoader asynctask if not finished when the activity is
      * destroyed.
      */
@@ -144,9 +156,11 @@ public class TerremotosSeguimiento extends ActionBarActivity
                             intent.getSerializableExtra(TSService.EQ_DATA);
         TSListFragment.updateEqList(eqData);
         resetViewPager();
+
+        // PENDING REVISION, TO BE REMOVED
         // TOFIX: Causes crash when app been created with EQDATA
         // intent -> fragment returns nullPointerException
-        vp.setCurrentItem(1);
+        //vp.setCurrentItem(1);
     }
 
 
