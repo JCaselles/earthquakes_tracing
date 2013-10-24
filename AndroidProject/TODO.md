@@ -3,7 +3,11 @@ TODO LIST
 
 4. Retrieve more info from website:
     - Map with location
-5. Silent mode
+5. Configuration activity
+    - Silent mode
+    - Number of days to fetch
+    - Use lightweight picture map instead of Google Maps API (for low-powered
+      devices)
 6. CLEAN CODE, comply with Java conventions
     - Comments
     - blank lines
