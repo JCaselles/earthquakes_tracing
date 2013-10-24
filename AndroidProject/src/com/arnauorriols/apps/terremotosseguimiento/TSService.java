@@ -1,11 +1,14 @@
 /*
  * TSService.java
  *
- * Service for Terremotos Seguimiento. Performs network and parsing operations 
- * with RequestHelper, compares latest data and shows notification if new data
- * is received.
+ * Service for Seísmo Adviser. Performs network and parsing operations
+ * with an instance of RequestHelper. It is fired every 15 minutes, and
+ * compares the new downloaded data with the old one, prompting a
+ * notification of new data differs.
  *
  * Author: Arnau Orriols
+ *
+ * Copyright 2013 Arnau Orriols.
  */
 package com.arnauorriols.apps.terremotosseguimiento;
 
@@ -24,28 +27,29 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.NullPointerException;
 import java.io.StreamCorruptedException;
 import java.io.OptionalDataException;
+import java.lang.NullPointerException;
 import java.util.HashMap;
 import java.util.ArrayList;
 
 public class TSService extends IntentService {
 
-    private HashMap<String, String> formerLatest;
-
     public static final String LAST_LATEST = "lastlatest.ser";
     public static final String LIST_LATEST = "latestlist.ser";
+    public static final String EQ_DATA =
+                        "com.arnauorriols.apps.terremotosseguimiento.EQDATA";
     private static final int NOTIFICATION_ID = 001;
-    public static final String EQ_DATA = "com.arnauorriols.apps.terremotosseguimiento.EQDATA";
-    private NotificationManager nm;
-    //private NotificationCompat.Builder builder;
+
+    private HashMap<String, String> lastLatest;
+
 
     public TSService(){
+
+        /* Debug related requirement from Android */
         super("TerremotosSeguimientoService");
-
-
     }
+
 
     @Override
     protected void onHandleIntent(Intent intent){
@@ -55,17 +59,17 @@ public class TSService extends IntentService {
             try{
                 fis = openFileInput(LAST_LATEST);
                 ObjectInputStream ois = new ObjectInputStream(fis);
-                formerLatest = (HashMap<String, String>) ois.readObject();
+                lastLatest = (HashMap<String, String>) ois.readObject();
                 Log.v(RequestHelper.DEBUG_TAG, "Former earthquake data found.");
-                Log.v(RequestHelper.DEBUG_TAG, "lastLatest = " + formerLatest.toString());
+                Log.v(RequestHelper.DEBUG_TAG, "lastLatest = " + lastLatest.toString());
 
             }catch (FileNotFoundException e){
                 Log.v(RequestHelper.DEBUG_TAG, "Fresh start. No earthquake data found");
-                formerLatest = new HashMap<String, String>();
-                formerLatest.put("date", "");
-                formerLatest.put("time", "");
-                formerLatest.put("magnitude", "");
-                formerLatest.put("location", "");
+                lastLatest = new HashMap<String, String>();
+                lastLatest.put("date", "");
+                lastLatest.put("time", "");
+                lastLatest.put("magnitude", "");
+                lastLatest.put("location", "");
             }catch (NullPointerException e){
                 Log.v(RequestHelper.DEBUG_TAG, "NullPointerException", e);
             }catch (StreamCorruptedException e){
@@ -86,8 +90,8 @@ public class TSService extends IntentService {
 
             HashMap<String, String> latestEQ = rh.fetchLastEarthquake();
 
-            if (!formerLatest.equals(latestEQ)) {
-                Log.v(RequestHelper.DEBUG_TAG, "new eq! former = " + formerLatest.toString() + 
+            if (!lastLatest.equals(latestEQ)) {
+                Log.v(RequestHelper.DEBUG_TAG, "new eq! former = " + lastLatest.toString() + 
                                                ", latest = " + latestEQ.toString());
 
                 String shortMsg = latestEQ.get("magnitude") + " -- " +
@@ -128,23 +132,37 @@ public class TSService extends IntentService {
     }
 
 
-    private void sendNotification(String shortMsg, String bigMsg, ArrayList<HashMap<String, String>> eqData) {
-        nm = (NotificationManager) this.getSystemService(
-                                        Context.NOTIFICATION_SERVICE);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-            new Intent(this, TerremotosSeguimiento.class).putExtra(EQ_DATA, (ArrayList) eqData), PendingIntent.FLAG_UPDATE_CURRENT | Intent.FLAG_ACTIVITY_NEW_TASK);
+    /**
+     * Builds and fires a notification with the new earthquake data and
+     * an intent to be sent on the notification's click. This itent
+     * carries the list with all the earthquakes registered, each with
+     * in its proper dict.
+     */
+    private void sendNotification(String shortMsg, String bigMsg,
+                                ArrayList<HashMap<String, String>> eqData) {
+
+        NotificationManager nm =
+                (NotificationManager) this.getSystemService(
+                                                Context.NOTIFICATION_SERVICE);
+
+        Intent intent = new Intent(this, TerremotosSeguimiento.class);
+        intent.putExtra(EQ_DATA, (ArrayList) eqData);
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                        this, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT |
+                           Intent.FLAG_ACTIVITY_NEW_TASK); /* Required */
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
-        .setSmallIcon(R.drawable.ic_launcher)
-        .setContentTitle(getString(R.string.new_eq))
-        .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(bigMsg))
-        .setContentText(shortMsg)
-        .setDefaults(Notification.DEFAULT_ALL)
-        .setAutoCancel(true);
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(getString(R.string.new_eq))
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                                        .bigText(bigMsg))
+                        .setContentText(shortMsg)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setAutoCancel(true);
+
         builder.setContentIntent(contentIntent);
         nm.notify(NOTIFICATION_ID, builder.build());
     }
-
 }
