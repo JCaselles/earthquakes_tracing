@@ -51,20 +51,45 @@ public class TSService extends IntentService {
     }
 
 
+    /**
+     * Processes all downloading and IO operations, compares data and
+     * sends a new notification if apropiate. Using an instance of
+     * RequestHelper class to get the eartquakes data from ign.es, it
+     * loads from file the last saved data (lastLatest) and compares it.
+     * If the last downloaded data (latestEQ) is different from the
+     * former latest, it sends a new notification to the user with the
+     * news.
+     *
+     * In order to save some bandwidth and parsing operations, only the
+     * last earthquake is compared (using the special method
+     * fetchLastEarthquake of RequestHelper and the LAST_LATEST file,
+     * instead of LIST_LATEST). Only when the two don't
+     * match the whole list is downloaded and saved in a file
+     * (LIST_LATEST).
+     */
     @Override
     protected void onHandleIntent(Intent intent){
         RequestHelper rh = new RequestHelper(this);
         if(rh.checkNetwork()){
+
+            /* TODO: Consider defining a function for this operation */
             FileInputStream fis = null;
             try{
                 fis = openFileInput(LAST_LATEST);
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 lastLatest = (HashMap<String, String>) ois.readObject();
-                Log.v(RequestHelper.DEBUG_TAG, "Former earthquake data found.");
-                Log.v(RequestHelper.DEBUG_TAG, "lastLatest = " + lastLatest.toString());
+
+                /* To be removed, use unittests instead */
+                Log.v(RequestHelper.DEBUG_TAG,
+                      "Former earthquake data found.");
+                Log.v(RequestHelper.DEBUG_TAG,
+                      "lastLatest = " + lastLatest.toString());
 
             }catch (FileNotFoundException e){
-                Log.v(RequestHelper.DEBUG_TAG, "Fresh start. No earthquake data found");
+
+                Log.v(RequestHelper.DEBUG_TAG,
+                      "Fresh start. No earthquake data found");
+
                 lastLatest = new HashMap<String, String>();
                 lastLatest.put("date", "");
                 lastLatest.put("time", "");
@@ -73,17 +98,21 @@ public class TSService extends IntentService {
             }catch (NullPointerException e){
                 Log.v(RequestHelper.DEBUG_TAG, "NullPointerException", e);
             }catch (StreamCorruptedException e){
-                Log.e(RequestHelper.DEBUG_TAG, "corrupted Stream when opening fis");
+                Log.v(RequestHelper.DEBUG_TAG,
+                      "corrupted Stream when opening fis");
             }catch (ClassNotFoundException e){
-                Log.e(RequestHelper.DEBUG_TAG, "ClassNotFoundException when opening fis");
+                Log.v(RequestHelper.DEBUG_TAG,
+                      "ClassNotFoundException when opening fis");
             }catch (IOException e){
-                Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fis");
+                Log.v(RequestHelper.DEBUG_TAG,
+                      "IOException when opening fis");
             }finally{
                 if (fis != null) {
                     try{
                         fis.close();
                     }catch (IOException e){
-                        Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fis");
+                        Log.v(RequestHelper.DEBUG_TAG,
+                              "IOException when closing fis");
                     }
                 }
             }
@@ -91,42 +120,55 @@ public class TSService extends IntentService {
             HashMap<String, String> latestEQ = rh.fetchLastEarthquake();
 
             if (!lastLatest.equals(latestEQ)) {
-                Log.v(RequestHelper.DEBUG_TAG, "new eq! former = " + lastLatest.toString() + 
-                                               ", latest = " + latestEQ.toString());
+
+                /* Consider remove log */
+                Log.v(RequestHelper.DEBUG_TAG,
+                      "new eq! former = " + lastLatest.toString() +
+                      ", latest = " + latestEQ.toString());
 
                 String shortMsg = latestEQ.get("magnitude") + " -- " +
-                                               latestEQ.get("location");
-                String bigMsg = latestEQ.get("time") + " -- " + latestEQ.get("date") +
-                                        "\n" + latestEQ.get("magnitude") + " -- " +
-                                        latestEQ.get("location");
-                ArrayList <HashMap<String, String>> listLatest = rh.fetchEarthquakeList(2);
+                                  latestEQ.get("location");
+                String bigMsg = latestEQ.get("time") + " -- " +
+                                latestEQ.get("date") + "\n" +
+                                latestEQ.get("magnitude") + " -- " +
+                                latestEQ.get("location");
+                ArrayList <HashMap<String, String>> listLatest =
+                                                    rh.fetchEarthquakeList(2);
                 sendNotification(shortMsg, bigMsg, listLatest);
+
+                /* Consider defining a method for these operations */
                 FileOutputStream fos = null;
                 try{
+
+                    /* Save last EQ data to LAST_LATEST */
                     fos = openFileOutput(LAST_LATEST, Context.MODE_PRIVATE);
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
                     oos.writeObject(latestEQ);
-                    oos.flush();
+                    oos.flush();        // Required
                     fos.close();
+
+                    /* Save all EQ list to LIST_LATEST */
                     fos = openFileOutput(LIST_LATEST, Context.MODE_PRIVATE);
                     oos = new ObjectOutputStream(fos);
                     oos.writeObject(listLatest);
-                    Log.v(RequestHelper.DEBUG_TAG, "Writting files. whole list: " + listLatest.toString());
                     oos.flush();
                 }catch (IOException e){
-                    Log.e(RequestHelper.DEBUG_TAG, "IOException when opening fos");
+                    Log.e(RequestHelper.DEBUG_TAG,
+                          "IOException when opening fos");
                 }finally{
                     if (fos != null){
                         try{
-                            Log.v(RequestHelper.DEBUG_TAG, "Files saved, closing fos");
                             fos.close();
                         }catch (IOException e){
-                            Log.e(RequestHelper.DEBUG_TAG, "IOException when closing fos");
+                            Log.e(RequestHelper.DEBUG_TAG,
+                                  "IOException when closing fos");
                         }
                     }
                 }
+
             }else{
-                Log.v(RequestHelper.DEBUG_TAG, "No new earthquakes. We are safe");
+                Log.v(RequestHelper.DEBUG_TAG,
+                      "No new earthquakes. We are safe");
             }
         }
     }
