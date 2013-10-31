@@ -46,8 +46,8 @@ public class TerremotosSeguimiento extends ActionBarActivity
         Log.d(RequestHelper.DEBUG_TAG, "activated is" +
                                                     String.valueOf(activated));
 
-        // TSFragmentPageAdapter is an inner class of this. it defines the
-        // instantation of each fragment for each tab.
+        /* TSFragmentPageAdapter is an inner class of this. it defines the
+           instantation of each fragment for each tab. */
         tsfpa = new TSFragmentPageAdapter(this, getSupportFragmentManager());
         vp = (ViewPager) findViewById(R.id.pager);
         vp.setAdapter(tsfpa);
@@ -55,9 +55,9 @@ public class TerremotosSeguimiento extends ActionBarActivity
         ActionBar ab = getSupportActionBar();
         ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        // TabListener calls the ViewPager to change the current position based
-        // on the current selected tab. This links the selection of a tab to
-        // the ViewPager.
+        /* TabListener calls the ViewPager to change the current position based
+           on the current selected tab. This links the selection of a tab to
+           the ViewPager.*/
         ActionBar.TabListener tl = new ActionBar.TabListener() {
 
             public void onTabSelected(ActionBar.Tab tab,
@@ -72,9 +72,9 @@ public class TerremotosSeguimiento extends ActionBarActivity
                                         FragmentTransaction ft){}
         };
 
-        // Changes de selected tab on the Action Bar based on the selected page
-        // of the ViewPager. This links the ViewPager swipe with the Action Bar
-        // tabs.
+        /* Changes de selected tab on the Action Bar based on the selected page
+           of the ViewPager. This links the ViewPager swipe with the Action Bar
+           tabs. */
         vp.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -82,8 +82,8 @@ public class TerremotosSeguimiento extends ActionBarActivity
             }
         });
 
-        // Adds the two tabs to the Action Bar. Each tab gets a label and the
-        // tab listener, which links the tab to the ViewPager.
+        /* Adds the two tabs to the Action Bar. Each tab gets a label and the
+           tab listener, which links the tab to the ViewPager. */
         ab.addTab(ab.newTab()
             .setText(getString(R.string.list_tab_label))
             .setTabListener(tl)
@@ -93,10 +93,10 @@ public class TerremotosSeguimiento extends ActionBarActivity
             .setTabListener(tl)
         );
 
-        // If no EQDATA intent, loads eqList from file or url. If EQDATA intent
-        // is found, updates eqList from the intent.
-        // TODO: Should be improved, sometimes gets stuck, sometimes shows
-        // wrong data.
+        /* If no EQDATA intent, loads eqList from file or url. If EQDATA intent
+           is found, updates eqList from the intent.
+           TODO: Should be improved, sometimes gets stuck, sometimes shows 
+           wrong data. */
         if(new RequestHelper(this).checkNetwork()){
             if (!getIntent().hasExtra(TSService.EQ_DATA)){
                 tsfl = new TSFileLoader(this);
@@ -165,7 +165,7 @@ public class TerremotosSeguimiento extends ActionBarActivity
 
 
     /** PageAdapter is destroyed and rebuild to update the fragments data. */
-    // TODO: Consider notifyDataSetChanged, it should work.
+    /* TODO: Consider notifyDataSetChanged, it should work. */
     public void resetViewPager(){
         //vp.getAdapter().notifyDataSetChanged();
         vp.setAdapter(null);
@@ -199,7 +199,7 @@ public class TerremotosSeguimiento extends ActionBarActivity
     }
 
 
-    // Menu options to set and cancel the alarm.
+    /* Menu options to set and cancel the alarm. */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
