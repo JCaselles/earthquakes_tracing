@@ -1,19 +1,34 @@
+/*
+ * TSDetailsFragment.java
+ *
+ * Fragment to show the details of each earthquake. This fragment
+ * corresponds to tab "detalles", and may show the usage explanation
+ * when no earthquake is selected.
+ *
+ * Author: Arnau Orriols
+ *
+ * Copyright 2013 Arnau Orriols.
+ */
 package com.arnauorriols.apps.terremotosseguimiento;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.widget.TextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.content.Intent;
-import android.util.Log;
 import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.ArrayList;
 
 
+/**
+ * Child class of Fragment, it defines the details fragment behaviour.
+ * Depending on the extra data of the intent present in the activity,
+ * it either presents this extra data or the usage explanation.
+ */
 public class TSDetailsFragment extends Fragment {
 
     private TextView title;
