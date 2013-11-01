@@ -28,6 +28,11 @@ import java.util.ArrayList;
  * Child class of Fragment, it defines the details fragment behaviour.
  * Depending on the extra data of the intent present in the activity,
  * it either presents this extra data or the usage explanation.
+ *
+ * Requires the activity that holds this fragment to implement
+ * OnFragmentReadyListener, which will function as the callback to tell
+ * the Activity that onCreateView has been finished, and all layout
+ * references are available.
  */
 public class TSDetailsFragment extends Fragment {
 
@@ -36,8 +41,13 @@ public class TSDetailsFragment extends Fragment {
     private TextView date;
     private TextView magnitude;
     private TextView location;
+
     private OnFragmentReadyListener ofrl;
 
+    /**
+     * Throws a ClassCastException if the activity that this Fragment
+     * attaches to haven't implemented OnFragmentReadyListener.
+     */
     @Override
     public void onAttach (Activity activity) {
         super.onAttach (activity);
@@ -50,9 +60,10 @@ public class TSDetailsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView (LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View fragView = inflater.inflate(R.layout.fragment_last, container, false);
+    public View onCreateView (LayoutInflater inflater,
+                        ViewGroup container, Bundle savedInstanceState) {
+        View fragView = inflater.inflate(R.layout.fragment_last,
+                                                    container, false);
         return fragView;
     }
 
@@ -68,19 +79,33 @@ public class TSDetailsFragment extends Fragment {
     }
 
 
+    /**
+     * All setting of content to the TextViews is performed here. It has
+     * to be this way to update the data on each list's item click of
+     * TSListFragment, because as this fragment is part of a ViewPager,
+     * it's loaded at the same time as the list.
+     */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser){
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser){
             Intent intent = getActivity().getIntent();
-            ArrayList<HashMap<String, String>> eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSService.EQ_DATA);
+            ArrayList<HashMap<String, String>> eqData =
+                    (ArrayList<HashMap<String, String>>)
+                            intent.getSerializableExtra(TSService.EQ_DATA);
             boolean details = false;
+
             if (eqData == null) {
-                eqData = (ArrayList<HashMap<String, String>>) intent.getSerializableExtra(TSListFragment.INTENT_DETAILS);
+                /* Different intents for whether it comes from the
+                 * notification(EQ_DATA) or the ListFragment (INTENT_DETAILS).
+                 */
+                eqData = (ArrayList<HashMap<String, String>>)
+                        intent.getSerializableExtra(
+                                            TSListFragment.INTENT_DETAILS);
                 details = true;
             }
-            if (eqData != null){ 
-                Log.v(RequestHelper.DEBUG_TAG, "eqData == " + eqData.toString());
+
+            if (eqData != null){
                 HashMap<String, String> eqLast = eqData.get(0);
                 if (details) {
                     title.setText(getString(R.string.details_title));
