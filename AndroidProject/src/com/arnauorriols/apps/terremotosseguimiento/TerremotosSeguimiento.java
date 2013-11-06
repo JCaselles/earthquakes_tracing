@@ -1,26 +1,38 @@
+/*
+ * TerremotosSeguimiento.java
+ *
+ * Main Activity of the app. Extends ActionBarActivity from
+ * support.v7.appcompat library. Features an ActionBar activity with swipe
+ * enabled tabs.
+ *
+ * Author: Arnau Orriols
+ *
+ * Copyright 2013 Arnau Orriols.
+ */
 package com.arnauorriols.apps.terremotosseguimiento;
 
-import com.arnauorriols.apps.terremotosseguimiento.R;
-
+//import com.arnauorriols.apps.terremotosseguimiento.R;   // Required?
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.util.Log;
-import android.content.Intent;
-import android.app.PendingIntent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.view.MenuItem;
+import android.view.Menu;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+
+
 
 public class TerremotosSeguimiento extends ActionBarActivity
                     implements TSListFragment.OnRowSelectedListener,
@@ -223,7 +235,9 @@ public class TerremotosSeguimiento extends ActionBarActivity
 
 
     public static class TSFragmentPageAdapter extends FragmentPagerAdapter {
+
         private Context context;
+
         public TSFragmentPageAdapter(Context context, FragmentManager fm) {
             super(fm);
             this.context = context;
