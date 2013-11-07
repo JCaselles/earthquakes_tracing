@@ -33,34 +33,52 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 
-
+/**
+ * ActionBarActivity featuring ActionBar with swipe enabled tabs. Uses a
+ * ViewPager to handle the fragments. The diferent lifecycle calls perform
+ * this:
+ *      onCreate: Configures ViewPager using TSFragmentAdapter (inner class of
+ *      this) and the TabListener. Finally populates eqList whether from the intent
+ *      comming from the notification or executes TSFileLoader asynctask.
+ *
+ *      onStart: Start Google Analytics tracking.
+ *
+ *      onStop: Stop Google Analytics tracking.
+ *
+ *      onDestroy: Cancel TSFileLoader asynctask if it's not already finished.
+ */
 public class TerremotosSeguimiento extends ActionBarActivity
                     implements TSListFragment.OnRowSelectedListener,
                                TSDetailsFragment.OnFragmentReadyListener {
 
     private static final int MAX_ITEMS = 2;
-    private TSFragmentPageAdapter tsfpa;
     private ViewPager vp;
-    private TSAlarmReceiver alarm = new TSAlarmReceiver();
     private boolean activated = false;
     private TSFileLoader tsfl;
 
 
+    /**
+     * Checks if service is activated, creates new TSFragmentPageAdapter and
+     * sets it to the ViewPager, adds the tabs, sets the TabListener to bind it
+     * to the ViewPager, sets onPageChangeListener to bind the swipe gesture to
+     * the tabs, and finally populates eqList, either from the intent comming
+     * from the notification or loads it using TSFileLoader asynctask.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        /* TODO: consider using preferences */
         activated = (PendingIntent.getBroadcast(
                 this, 0, new Intent(this, TSAlarmReceiver.class),
                         PendingIntent.FLAG_NO_CREATE) != null);
 
-        Log.d(RequestHelper.DEBUG_TAG, "activated is" +
-                                                    String.valueOf(activated));
-
         /* TSFragmentPageAdapter is an inner class of this. it defines the
            instantation of each fragment for each tab. */
-        tsfpa = new TSFragmentPageAdapter(this, getSupportFragmentManager());
+        TSFragmentPageAdapter tsfpa = new TSFragmentPageAdapter(
+                                            this, getSupportFragmentManager());
         vp = (ViewPager) findViewById(R.id.pager);
         vp.setAdapter(tsfpa);
 
@@ -71,15 +89,12 @@ public class TerremotosSeguimiento extends ActionBarActivity
            on the current selected tab. This links the selection of a tab to
            the ViewPager.*/
         ActionBar.TabListener tl = new ActionBar.TabListener() {
-
             public void onTabSelected(ActionBar.Tab tab,
                                       FragmentTransaction ft){
                 vp.setCurrentItem(tab.getPosition());
             }
-
             public void onTabUnselected(ActionBar.Tab tab,
                                         FragmentTransaction ft){}
-
             public void onTabReselected(ActionBar.Tab tab,
                                         FragmentTransaction ft){}
         };
@@ -182,7 +197,6 @@ public class TerremotosSeguimiento extends ActionBarActivity
         //vp.getAdapter().notifyDataSetChanged();
         vp.setAdapter(null);
         vp.setAdapter(new TSFragmentPageAdapter(this, getSupportFragmentManager()));
-        Log.v(RequestHelper.DEBUG_TAG, "List should be updated");
     }
 
 
@@ -211,9 +225,10 @@ public class TerremotosSeguimiento extends ActionBarActivity
     }
 
 
-    /* Menu options to set and cancel the alarm. */
+    /** Menu options to set and cancel the alarm. */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        TSAlarmReceiver alarm = new TSAlarmReceiver();
         switch (item.getItemId()) {
             case R.id.activation_switch:
                 if(!activated){
@@ -234,8 +249,13 @@ public class TerremotosSeguimiento extends ActionBarActivity
     }
 
 
+    /**
+     * Binds each fragment with a position of the ViewPager this adapter is
+     * going to be set to.
+     *          position 0: TSListFragment
+     *          position 1: TSDetailsFragment
+     */
     public static class TSFragmentPageAdapter extends FragmentPagerAdapter {
-
         private Context context;
 
         public TSFragmentPageAdapter(Context context, FragmentManager fm) {
@@ -266,12 +286,16 @@ public class TerremotosSeguimiento extends ActionBarActivity
     }
 
 
+    /**
+     * Implements TSListFragment interface OnRowSelectedListener, setting a new
+     * intent to this activity with the selected earthquake's HashMap as an
+     * INTENT_DETAILS intent.
+     */
     @Override
     public void onRowSelected(HashMap<String, String> eqData){
         ArrayList<HashMap<String, String>> eqList =
                                 new ArrayList<HashMap<String, String>>();
         eqList.add(eqData);
-
         Intent intent = new Intent()
                         .putExtra(TSListFragment.INTENT_DETAILS, eqList);
         setIntent(intent);
